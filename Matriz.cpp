@@ -1,6 +1,6 @@
-#include "Matrices.h"
+#include "Matriz.h"
 
-Matriz Matriz::operator+(const Matriz &m){
+Matriz Matriz::operator+(const Matriz m){
 	Matriz err(m.n);
 	if(this->n == m.n && this->m == m.m){
 		Matriz sum(m.n, m.m);
@@ -19,7 +19,7 @@ vector<double> &Matriz::operator[](int i){
 	else return this->mat[i];
 }
 
-Matriz Matriz::operator-(const Matriz &m){
+Matriz Matriz::operator-(const Matriz m){
 	Matriz err(m.n);
 	if(this->n == m.n && this->m == m.m){
 		Matriz res(m.n, m.m);
@@ -35,13 +35,13 @@ Matriz Matriz::operator-(const Matriz &m){
 
 Matriz Matriz::operator*(const double A){
 	Matriz B(this->SizeN(), this->SizeM());
-    for(int i = 0; i < B.SizeN(); i++)
-        for(int j = 0; j < B.SizeM(); j++)
-            B.mat[i][j] = this->mat[i][j] * A;
-    return B;
+	for(int i = 0; i < B.SizeN(); i++)
+		for(int j = 0; j < B.SizeM(); j++)
+			B.mat[i][j] = this->mat[i][j] * A;
+	return B;
 }
 
-Matriz Matriz::operator*(const Matriz &m){
+Matriz Matriz::operator*(const Matriz m){
 	Matriz C(this->n, m.m);
 	if(this->n == m.m && this->m == m.n){
 		for(int i = 0; i < this->SizeN(); i++){
@@ -53,11 +53,6 @@ Matriz Matriz::operator*(const Matriz &m){
 		}
 	}
 	return C;
-}
-
-Matriz::Matriz(void){
-	this->n = 1;
-	this->m = 1;
 }
 
 Matriz::Matriz(int n, int m){
@@ -140,5 +135,5 @@ Matriz Matriz::Transpuesta(){
 		for(int j = 0; j < (int)this->SizeM(); j++)
 			B.mat[j][i] = this->mat[i][j];
 
-    return B;
+	return B;
 }
