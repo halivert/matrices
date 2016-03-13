@@ -14,7 +14,7 @@ class Matriz{
 		int n, m;
 		vector< vector<T> > mat;
 	public:
-		Matriz(int = 0);
+		Matriz(int = 1);
 		Matriz(int, int);
 		Matriz(vector< vector<T> >);
 		void SetMat(vector< vector<T> >);
