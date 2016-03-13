@@ -1,6 +1,85 @@
 #include "Matriz.h"
 
-Matriz Matriz::operator+(const Matriz m){
+template <class T>
+Matriz<T>::Matriz(int n){
+	this->n = n;
+	this->m = n;
+	vector<T> tmp;
+	for(int j = 0; j < n; j++){
+		tmp.push_back(0);
+	}
+	for(int i = 0; i < n; i++){
+		mat.push_back(tmp);
+	}
+}
+
+template <class T>
+Matriz<T>::Matriz(int n, int m){
+	this->n = n;
+	this->m = m;
+	vector<T> tmp;
+	for(int j = 0; j < m; j++){
+		tmp.push_back(0);
+	}
+	for(int i = 0; i < n; i++){
+		mat.push_back(tmp);
+	}
+}
+
+template <class T>
+Matriz<T>::Matriz(vector< vector<T> > vec){
+	this->mat = vec;
+	this->n = (int)vec.size();
+	this->m = (int)vec[0].size();
+}
+
+template <>
+void Matriz<double>::ImprimirM(void){
+	for(int i = 0; i < this->n; i++){
+		for(int j = 0; j < this->m; j++){
+			printf("%.2lf ", this->mat[i][j]);
+		}
+		puts("");
+	}
+	puts("");
+}
+
+template <>
+void Matriz<int>::ImprimirM(void){
+	for(int i = 0; i < this->n; i++){
+		for(int j = 0; j < this->m; j++){
+			printf("%d ", this->mat[i][j]);
+		}
+		puts("");
+	}
+	puts("");
+}
+
+template <class T>
+int Matriz<T>::SizeN(void){ return n; }
+
+template <class T>
+int Matriz<T>::SizeM(void){ return m; }
+
+template <class T>
+void Matriz<T>::SetMat(vector< vector<T> > vec){
+	this->mat = vec;
+	this->n = (int)vec.size();
+	this->m = (int)vec[0].size();
+}
+
+template <class T>
+Matriz<T> Matriz<T>::Transpuesta(){
+	Matriz B(this->m, this->n);
+	for(int i = 0; i < (int)this->SizeN(); i++)
+		for(int j = 0; j < (int)this->SizeM(); j++)
+			B.mat[j][i] = this->mat[i][j];
+
+	return B;
+}
+
+template <class T>
+Matriz<T> Matriz<T>::operator+(const Matriz<T> m){
 	Matriz err(m.n);
 	if(this->n == m.n && this->m == m.m){
 		Matriz sum(m.n, m.m);
@@ -14,12 +93,14 @@ Matriz Matriz::operator+(const Matriz m){
 	else return err;
 }
 
-vector<double> &Matriz::operator[](int i){
+template <class T>
+vector<T> &Matriz<T>::operator[](int i){
 	if(i > this->SizeN()) return this->mat[0];
 	else return this->mat[i];
 }
 
-Matriz Matriz::operator-(const Matriz m){
+template <class T>
+Matriz<T> Matriz<T>::operator-(const Matriz m){
 	Matriz err(m.n);
 	if(this->n == m.n && this->m == m.m){
 		Matriz res(m.n, m.m);
@@ -33,7 +114,8 @@ Matriz Matriz::operator-(const Matriz m){
 	else return err;
 }	
 
-Matriz Matriz::operator*(const double A){
+template <class T>
+Matriz<T> Matriz<T>::operator*(const T A){
 	Matriz B(this->SizeN(), this->SizeM());
 	for(int i = 0; i < B.SizeN(); i++)
 		for(int j = 0; j < B.SizeM(); j++)
@@ -41,7 +123,8 @@ Matriz Matriz::operator*(const double A){
 	return B;
 }
 
-Matriz Matriz::operator*(const Matriz m){
+template <class T>
+Matriz<T> Matriz<T>::operator*(const Matriz<T> m){
 	Matriz C(this->n, m.m);
 	if(this->n == m.m && this->m == m.n){
 		for(int i = 0; i < this->SizeN(); i++){
@@ -55,85 +138,5 @@ Matriz Matriz::operator*(const Matriz m){
 	return C;
 }
 
-Matriz::Matriz(int n, int m){
-	this->n = n;
-	this->m = m;
-	vector<double> tmp;
-	for(int j = 0; j < m; j++){
-		tmp.push_back(0);
-	}
-	for(int i = 0; i < n; i++){
-		mat.push_back(tmp);
-	}
-}
-
-Matriz::Matriz(int n, int m, char c){
-	this->n = n;
-	this->m = m;
-	vector<double> tmp;
-	for(int j = 0; j < m; j++){
-		tmp.push_back(c - '0');
-	}
-	for(int i = 0; i < n; i++){
-		mat.push_back(tmp);
-	}
-}
-
-Matriz::Matriz(vector< vector<double> > vec){
-	this->mat = vec;
-	this->n = (int)vec.size();
-	this->m = (int)vec[0].size();
-}
-
-void Matriz::ImprimirM(void){
-	for(int i = 0; i < this->n; i++){
-		for(int j = 0; j < this->m; j++){
-			printf("%.2lf ", this->mat[i][j]);
-		}
-		puts("");
-	}
-	puts("");
-}
-
-Matriz::Matriz(int n){
-	this->n = n;
-	this->m = n;
-	vector<double> tmp;
-	for(int j = 0; j < n; j++){
-		tmp.push_back(0);
-	}
-	for(int i = 0; i < n; i++){
-		mat.push_back(tmp);
-	}
-}
-
-Matriz::Matriz(int n, char c){
-	this->n = n;
-	this->m = n;
-	vector<double> tmp;
-	for(int j = 0; j < n; j++){
-		tmp.push_back(c - '0');
-	}
-	for(int i = 0; i < n; i++){
-		mat.push_back(tmp);
-	}
-}
-
-int Matriz::SizeN(void){ return n; }
-
-int Matriz::SizeM(void){ return m; }
-
-void Matriz::SetMat(vector< vector<double> > vec){
-	this->mat = vec;
-	this->n = (int)vec.size();
-	this->m = (int)vec[0].size();
-}
-
-Matriz Matriz::Transpuesta(){
-	Matriz B(this->m, this->n);
-	for(int i = 0; i < (int)this->SizeN(); i++)
-		for(int j = 0; j < (int)this->SizeM(); j++)
-			B.mat[j][i] = this->mat[i][j];
-
-	return B;
-}
+template class Matriz<double>;
+template class Matriz<int>;

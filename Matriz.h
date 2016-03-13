@@ -1,3 +1,6 @@
+#ifndef MATX_H
+#define MATX_H
+
 #include <vector>
 #include <cstdio>
 #include <ctime>
@@ -5,17 +8,16 @@
 
 using namespace std;
 
+template <class T>
 class Matriz{
 	private:
 		int n, m;
-		vector< vector<double> >mat;
+		vector< vector<T> > mat;
 	public:
 		Matriz(int = 0);
 		Matriz(int, int);
-		Matriz(int, int, char);
-		Matriz(int, char);
-		Matriz(vector< vector<double> >);
-		void SetMat(vector< vector<double> >);
+		Matriz(vector< vector<T> >);
+		void SetMat(vector< vector<T> >);
 		void ImprimirM(void);
 		int SizeN(void);
 		int SizeM(void);
@@ -23,7 +25,9 @@ class Matriz{
 
 		Matriz operator+(const Matriz m);
 		Matriz operator-(const Matriz m);
-		Matriz operator*(const double A);
+		Matriz operator*(const T A);
 		Matriz operator*(const Matriz m);
-		vector<double> &operator[](int i);
+		vector<T> &operator[](int i);
 };
+
+#endif
