@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <cstdio>
-#include <ctime>
 #include <cstdlib>
 
 using namespace std;
@@ -14,13 +13,6 @@ class Matrix {
     int sizeN, sizeM;
     vector<vector<T>> matrix;
 
-    Matrix(int _sizeN = 1) {
-      sizeN = sizeM = _sizeN;
-      vector<T> sizeMVector(sizeM, 0);
-      for (int i = 0; i < sizeN; i++)
-        matrix.push_back(sizeMVector);
-    }
-
     Matrix(int _sizeN, int _sizeM) {
       sizeN = _sizeN;
       sizeM = _sizeM;
@@ -29,8 +21,10 @@ class Matrix {
         matrix.push_back(sizeMVector);
     }
 
+    Matrix(int _sizeN = 1) : Matrix(_sizeN, _sizeN) {}
+
     Matrix(vector<vector<T>>);
-    void setMat(vector<vector<T>>);
+    void setMatrix(vector<vector<T>>);
     void printMatrix(void);
     Matrix transpose();
 
@@ -71,7 +65,7 @@ void Matrix<int>::printMatrix(void) {
 }
 
 template<class T>
-void Matrix<T>::setMat(vector<vector<T>> vec) {
+void Matrix<T>::setMatrix(vector<vector<T>> vec) {
   matrix = vec;
   sizeN = vec.size();
   sizeM = vec[0].size();
