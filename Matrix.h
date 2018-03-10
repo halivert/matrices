@@ -3,14 +3,21 @@
 
 #include <vector>
 #include <cstdio>
+#include <cmath>
 #include <cstdlib>
 
 template<class T>
 class Matrix {
-  public:
+  private:
     long long sizeN, sizeM;
     std::vector<std::vector<T>> matrix;
+    const double ERROR = 1e-9;
 
+    bool Zero(double a) {
+      return fabs(a) < ERROR;
+    }
+
+  public:
     Matrix(long long _sizeN, long long _sizeM) {
       sizeN = _sizeN;
       sizeM = _sizeM;
@@ -25,12 +32,14 @@ class Matrix {
     void setMatrix(std::vector<std::vector<T>>);
     void printMatrix();
     Matrix transpose();
+    void gaussianElimination();
+    void gaussianElimination(std::vector<double>);
 
-    Matrix operator+(const Matrix m);
-    Matrix operator-(const Matrix m);
-    Matrix operator*(const T A);
-    Matrix operator*(const Matrix m);
-    std::vector<T> &operator[](long long i);
+    Matrix operator+(const Matrix);
+    Matrix operator-(const Matrix);
+    Matrix operator*(const T);
+    Matrix operator*(const Matrix);
+    std::vector<T> &operator[](long long);
 };
 
 template<class T>
@@ -137,6 +146,40 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T> matrix) {
     }
   }
   return C;
+}
+
+template<>
+void Matrix<double>::gaussianElimination() {
+  long long k, i, j, kMax;
+  for (k = 0; k < std::min(sizeN, sizeM); ++k) {
+
+    kMax = k;
+    for (i = k + 1; i < sizeN; ++i)
+      if (fabs(matrix[kMax][k]) < fabs(matrix[i][k]))
+        kMax = i;
+
+    std::swap(matrix[k], matrix[kMax]);
+
+    if (Zero(matrix[k][k])) continue;
+    for (i = sizeM - 1; i >= k; --i)
+      matrix[k][i] = matrix[k][i] / matrix[k][k] * 1.0;
+    for (i = 0; i < sizeN; ++i) {
+      if (k == i or Zero(matrix[i][k])) continue;
+      for (j = sizeM - 1; j >= k; --j)
+        matrix[i][j] = matrix[i][j] - matrix[k][j] * (matrix[i][k] * 1.0);
+    }
+  }
+}
+
+template<>
+void Matrix<double>::gaussianElimination(std::vector<double> results) {
+  if ((long long)results.size() != sizeN) return;
+
+  for (long long i = 0; i < sizeN; ++i)
+    matrix[i].push_back(results[i]);
+
+  sizeM++;
+  this->gaussianElimination();
 }
 
 #endif
