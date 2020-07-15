@@ -1,2 +1,2 @@
 language = "cpp"
-run = "gcc main.cpp -Wall"
+run = "g++ main.cpp -Wall && ./a.out && rm ./a.out"
