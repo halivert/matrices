@@ -1,185 +1,182 @@
 #ifndef MATX_H
 #define MATX_H
 
-#include <vector>
-#include <cstdio>
 #include <cmath>
 #include <cstdlib>
+#include <iterator>
+#include <stdexcept>
+#include <vector>
 
-template<class T>
+using std::vector;
+
+template <class T>
 class Matrix {
-  private:
-    long long sizeN, sizeM;
-    std::vector<std::vector<T>> matrix;
-    const double ERROR = 1e-9;
+	size_t sizeN, sizeM;
+	vector<vector<T>> matrix;
+	const double ERROR = 1e-9;
 
-    bool Zero(double a) {
-      return fabs(a) < ERROR;
-    }
+	inline bool Zero(double a) { return fabs(a) < ERROR; }
 
-  public:
-    Matrix(long long _sizeN, long long _sizeM) {
-      sizeN = _sizeN;
-      sizeM = _sizeM;
-      std::vector<T> sizeMVector(sizeM, 0);
-      for (long long i = 0; i < sizeN; i++)
-        matrix.push_back(sizeMVector);
-    }
+public:
+	Matrix(size_t _sizeN, size_t _sizeM) {
+		sizeN = _sizeN;
+		sizeM = _sizeM;
+		vector<T> sizeMVector(sizeM, 0);
+		matrix.resize(sizeN);
+		for (size_t i = 0; i < sizeN; i++) {
+			matrix[i] = sizeMVector;
+		}
+	}
 
-    Matrix(long long _sizeN = 1) : Matrix(_sizeN, _sizeN) {}
+	Matrix(size_t _sizeN = 1) : Matrix(_sizeN, _sizeN) {}
+	Matrix(vector<vector<T>>);
 
-    Matrix(std::vector<std::vector<T>>);
-    void setMatrix(std::vector<std::vector<T>>);
-    void printMatrix();
-    Matrix transpose();
-    void gaussianElimination();
-    void gaussianElimination(std::vector<double>);
+	void setMatrix(vector<vector<T>>);
+	Matrix transpose();
+	size_t size();
+	size_t columnSize();
+	void gaussianElimination();
+	void gaussianElimination(vector<double>);
 
-    Matrix operator+(const Matrix);
-    Matrix operator-(const Matrix);
-    Matrix operator*(const T);
-    Matrix operator*(const Matrix);
-    std::vector<T> &operator[](long long);
+	Matrix operator+(Matrix);
+	Matrix operator-(Matrix);
+	Matrix operator*(T);
+	Matrix operator*(Matrix);
+	vector<T> operator[](size_t);
+	typename vector<vector<T>>::iterator begin();
+	typename vector<vector<T>>::iterator end();
+	const typename vector<vector<T>>::iterator begin() const;
+	const typename vector<vector<T>>::iterator end() const;
 };
 
-template<class T>
-Matrix<T>::Matrix(std::vector<std::vector<T>> vec) {
-  matrix = vec;
-  sizeN = vec.size();
-  sizeM = vec[0].size();
+template <class T>
+Matrix<T>::Matrix(vector<vector<T>> vec) {
+	matrix = vec;
+	sizeN = vec.size();
+	sizeM = 0;
+
+	if (vec.size() > 0) {
+		size_t length = vec[0].size();
+
+		for (auto row : vec) {
+			if (length != row.size()) {
+				throw std::invalid_argument("Invalid matrix size");
+			}
+		}
+		sizeM = vec[0].size();
+	}
 }
 
-template<>
-void Matrix<double>::printMatrix(void) {
-  for (int i = 0; i < sizeN; i++) {
-    for (int j = 0; j < sizeM; j++) {
-      printf("%.2lf ", matrix[i][j]);
-    }
-    puts("");
-  }
-  puts("");
+template <class T>
+void Matrix<T>::setMatrix(vector<vector<T>> vec) {
+	matrix = vec;
+	sizeN = vec.size();
+	sizeM = vec[0].size();
 }
 
-template<>
-void Matrix<int>::printMatrix(void) {
-  for (int i = 0; i < sizeN; i++) {
-    for (int j = 0; j < sizeM; j++) {
-      printf("%d ", matrix[i][j]);
-    }
-    puts("");
-  }
-  puts("");
-}
-
-template<class T>
-void Matrix<T>::setMatrix(std::vector<std::vector<T>> vec) {
-  matrix = vec;
-  sizeN = vec.size();
-  sizeM = vec[0].size();
-}
-
-template<class T>
+template <class T>
 Matrix<T> Matrix<T>::transpose() {
-  Matrix resultMatrix(sizeM, sizeN);
-  for (long long i = 0; i < sizeN; i++)
-    for (long long j = 0; j < sizeM; j++)
-      resultMatrix.matrix[j][i] = matrix[i][j];
+	Matrix resultMatrix(sizeM, sizeN);
+	for (size_t i = 0; i < sizeN; i++) {
+		for (size_t j = 0; j < sizeM; j++) {
+			resultMatrix.matrix[j][i] = matrix[i][j];
+		}
+	}
 
-  return resultMatrix;
+	return resultMatrix;
 }
 
-template<class T>
-Matrix<T> Matrix<T>::operator+(const Matrix<T> matrix) {
-  Matrix ans(matrix.sizeN);
-  if (sizeN == matrix.sizeN and sizeM == matrix.sizeM) {
-    Matrix sum(matrix.sizeN, matrix.sizeM);
-    for (long long i = 0; i < matrix.sizeN; i++) {
-      for (long long j = 0; j < matrix.sizeM; j++) {
-        sum.matrix[i][j] = matrix.matrix[i][j] + matrix[i][j];
-      }
-    }
-    return sum;
-  }
-  else return ans;
+template <class T>
+Matrix<T> Matrix<T>::operator+(Matrix<T> matrix) {
+	Matrix ans(matrix.sizeN);
+	if (sizeN == matrix.sizeN and sizeM == matrix.sizeM) {
+		Matrix sum(matrix.sizeN, matrix.sizeM);
+		for (size_t i = 0; i < matrix.sizeN; i++) {
+			for (size_t j = 0; j < matrix.sizeM; j++) {
+				sum.matrix[i][j] = matrix.matrix[i][j] + matrix[i][j];
+			}
+		}
+		return sum;
+	} else {
+		return ans;
+	}
 }
 
-template<class T>
-std::vector<T> &Matrix<T>::operator[](long long i) {
-  if (i > sizeN) return matrix[0];
-  else return matrix[i];
+template <class T>
+vector<T> Matrix<T>::operator[](size_t i) {
+	if (i > sizeN)
+		return matrix[0];
+	else
+		return matrix[i];
 }
 
-template<class T>
-Matrix<T> Matrix<T>::operator-(const Matrix<T> matrix) {
-  Matrix err(matrix.sizeN);
-  if (sizeN == matrix.sizeN && sizeM == matrix.sizeM) {
-    Matrix res(matrix.sizeN, matrix.sizeM);
-    for (long long i = 0; i < matrix.sizeN; i++) {
-      for (long long j = 0; j < matrix.sizeM; j++) {
-        res.matrix[i][j] = matrix.matrix[i][j] - matrix[i][j];
-      }
-    }
-    return res;
-  }
-  else return err;
+template <class T>
+Matrix<T> Matrix<T>::operator-(Matrix<T> matrix) {
+	Matrix err(matrix.sizeN);
+	if (sizeN == matrix.sizeN && sizeM == matrix.sizeM) {
+		Matrix res(matrix.sizeN, matrix.sizeM);
+		for (size_t i = 0; i < matrix.sizeN; i++) {
+			for (size_t j = 0; j < matrix.sizeM; j++) {
+				res.matrix[i][j] = matrix.matrix[i][j] - matrix[i][j];
+			}
+		}
+		return res;
+	} else
+		return err;
 }
 
-template<class T>
-Matrix<T> Matrix<T>::operator*(const T A) {
-  Matrix resultMatrix(sizeN, sizeM);
-  for (long long i = 0; i < resultMatrix.sizeN; i++)
-    for (long long j = 0; j < resultMatrix.sizeM; j++)
-      resultMatrix.matrix[i][j] = matrix[i][j] * A;
-  return resultMatrix;
+template <class T>
+Matrix<T> Matrix<T>::operator*(T A) {
+	Matrix resultMatrix(sizeN, sizeM);
+	for (size_t i = 0; i < resultMatrix.sizeN; i++)
+		for (size_t j = 0; j < resultMatrix.sizeM; j++)
+			resultMatrix.matrix[i][j] = matrix[i][j] * A;
+	return resultMatrix;
 }
 
-template<class T>
-Matrix<T> Matrix<T>::operator*(const Matrix<T> matrix) {
-  Matrix C(sizeN, matrix.sizeM);
-  if (sizeN == matrix.sizeM && sizeM == matrix.sizeN) {
-    for (long long i = 0; i < sizeN; i++) {
-      for (long long j = 0; j < matrix.sizeM; j++) {
-        for (long long k = 0; k < sizeM; k++) {
-          C.matrix[i][j] += matrix[i][k] * matrix.matrix[k][j];
-        }
-      }
-    }
-  }
-  return C;
+template <class T>
+Matrix<T> Matrix<T>::operator*(Matrix<T> matrix) {
+	Matrix C(sizeN, matrix.sizeM);
+	if (sizeN == matrix.sizeM && sizeM == matrix.sizeN) {
+		for (size_t i = 0; i < sizeN; i++) {
+			for (size_t j = 0; j < matrix.sizeM; j++) {
+				for (size_t k = 0; k < sizeM; k++) {
+					C.matrix[i][j] += matrix[i][k] * matrix.matrix[k][j];
+				}
+			}
+		}
+	}
+	return C;
 }
 
-template<>
-void Matrix<double>::gaussianElimination() {
-  long long k, i, j, kMax;
-  for (k = 0; k < std::min(sizeN, sizeM); ++k) {
-
-    kMax = k;
-    for (i = k + 1; i < sizeN; ++i)
-      if (fabs(matrix[kMax][k]) < fabs(matrix[i][k]))
-        kMax = i;
-
-    std::swap(matrix[k], matrix[kMax]);
-
-    if (Zero(matrix[k][k])) continue;
-    for (i = sizeM - 1; i >= k; --i)
-      matrix[k][i] = matrix[k][i] / matrix[k][k] * 1.0;
-    for (i = 0; i < sizeN; ++i) {
-      if (k == i or Zero(matrix[i][k])) continue;
-      for (j = sizeM - 1; j >= k; --j)
-        matrix[i][j] = matrix[i][j] - matrix[k][j] * (matrix[i][k] * 1.0);
-    }
-  }
+template <class T>
+size_t Matrix<T>::size() {
+	return sizeN;
 }
 
-template<>
-void Matrix<double>::gaussianElimination(std::vector<double> results) {
-  if ((long long)results.size() != sizeN) return;
+template <class T>
+size_t Matrix<T>::columnSize() {
+	return sizeM;
+}
 
-  for (long long i = 0; i < sizeN; ++i)
-    matrix[i].push_back(results[i]);
+template <class T>
+typename vector<vector<T>>::iterator Matrix<T>::begin() {
+	return matrix.begin();
+}
 
-  sizeM++;
-  this->gaussianElimination();
+template <class T>
+typename vector<vector<T>>::iterator Matrix<T>::end() {
+	return matrix.end();
+}
+
+template <class T>
+const typename vector<vector<T>>::iterator Matrix<T>::begin() const {
+	return matrix.begin();
+}
+
+template <class T>
+const typename vector<vector<T>>::iterator Matrix<T>::end() const {
+	return matrix.end();
 }
 
 #endif
