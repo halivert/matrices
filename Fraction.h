@@ -13,7 +13,18 @@ namespace hspc {
 		int _sign;
 
 	public:
-		Fraction(ll = 0, ll = 1);
+		template <class T>
+		Fraction(T numerator, T denominator) {
+			if (denominator == 0) {
+				throw std::invalid_argument("Denominator couldn't be zero");
+			}
+
+			ll gcd = std::__gcd(llabs(numerator), llabs(denominator));
+			_num = llabs(numerator) / gcd;
+			_den = llabs(denominator) / gcd;
+			_sign = (numerator > 0) != (denominator > 0) ? -1 : 1;
+		};
+
 		Fraction(double);
 
 		inline ll numerator() { return _sign * _num; }
@@ -30,6 +41,11 @@ namespace hspc {
 		Fraction operator*(const Fraction &);
 		Fraction operator/(const Fraction &);
 
+		inline Fraction &operator+=(const Fraction &f) { return *this = *this + f; }
+		inline Fraction &operator-=(const Fraction &f) { return *this = *this - f; }
+		inline Fraction &operator*=(const Fraction &f) { return *this = *this * f; }
+		inline Fraction &operator/=(const Fraction &f) { return *this = *this / f; }
+
 		inline bool operator<(const Fraction &f) {
 			return (_num * f._den) < (_den * f._num);
 		}
@@ -42,6 +58,8 @@ namespace hspc {
 		inline bool operator>(const Fraction &f) { return *this < f; }
 		inline bool operator<=(const Fraction &f) { return !(*this > f); }
 		inline bool operator>=(const Fraction &f) { return !(*this < f); }
+
+		inline double to_d() const { return 1.0 * _sign * _num / _den; }
 	};
 
 	std::ostream &operator<<(std::ostream &, const Fraction &);
