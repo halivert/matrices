@@ -1,16 +1,14 @@
-a.out: Fraction.o
-	@g++ Fraction.o main.cpp -Wall
-	@echo "Compiled a.out"
+.PHONY: build
 
-Fraction.o: Fraction.h Fraction.cpp
-	@g++ Fraction.cpp -c -o Fraction.o
-	@echo "Compile header Fraction.o"
+build:
+	@cmake -S . -B build -G "Unix Makefiles"
+	@cmake --build build/
 
-run: a.out
-	@./a.out
-	@rm -rf a.out
+test: build
+	@ctest --build-and-test . build --build-generator "Unix Makefiles"
+	@(cd build; make test)
 
 clean:
-	@rm -rf Fraction.o a.out
+	@rm -rf build
 	@echo "Cleaned files"
 

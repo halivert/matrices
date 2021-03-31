@@ -50,7 +50,7 @@ namespace hspc {
 			return (_num * f._den) < (_den * f._num);
 		}
 
-		inline bool operator==(const Fraction &f) {
+		inline bool operator==(const Fraction &f) const {
 			return (_num * f._den) == (_den * f._num);
 		}
 
