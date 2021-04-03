@@ -14,7 +14,7 @@ namespace hspc {
 
 	public:
 		template <class T>
-		Fraction(T numerator, T denominator) {
+		Fraction(T numerator, T denominator = 1) {
 			if (denominator == 0) {
 				throw std::invalid_argument("Denominator couldn't be zero");
 			}
@@ -24,8 +24,6 @@ namespace hspc {
 			_den = llabs(denominator) / gcd;
 			_sign = (numerator > 0) != (denominator > 0) ? -1 : 1;
 		};
-
-		Fraction(double);
 
 		inline ll numerator() { return _sign * _num; }
 		inline ll denominator() { return _den; }

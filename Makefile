@@ -5,7 +5,8 @@ build:
 	@cmake --build build/
 
 test: build
-	@ctest --build-and-test . build --build-generator "Unix Makefiles"
+	@ctest --build-and-test . build --build-generator "Unix Makefiles" \
+		--output-on-failure
 	@(cd build; make test)
 
 clean:
