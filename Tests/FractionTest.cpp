@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include <stdexcept>
 
 #include "../Fraction.h"
@@ -37,4 +38,12 @@ TEST(BasicFractionOperations, FractionsCanBeDivided) {
 	Fraction f(1, 2), g(2, 4);
 
 	ASSERT_EQ(f / g, Fraction(1));
+}
+
+TEST(BaseFraction, ConvertFromDouble) {
+	double easy[] = {3.0, 6.0, 9.0, 11.0, 12.0, 15.0};
+
+	for (double i : easy) {
+		EXPECT_EQ(Fraction(1 / i), Fraction(1, (int)i));
+	}
 }

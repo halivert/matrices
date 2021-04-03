@@ -8,11 +8,14 @@ enable_testing()
 add_library(FractionLib Fraction.cpp)
 
 add_executable(FractionTest Tests/FractionTest.cpp)
+add_executable(RepeatingLastDigitsTest Tests/RepeatingLastDigitsTest.cpp)
 
 add_executable(Main main.cpp)
 
 target_link_libraries(FractionTest gtest_main FractionLib)
+target_link_libraries(RepeatingLastDigitsTest gtest_main FractionLib)
 target_link_libraries(Main FractionLib)
 
 include(GoogleTest)
+gtest_discover_tests(RepeatingLastDigitsTest)
 gtest_discover_tests(FractionTest)

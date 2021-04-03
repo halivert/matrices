@@ -25,6 +25,8 @@ namespace hspc {
 			_sign = (numerator > 0) != (denominator > 0) ? -1 : 1;
 		};
 
+		Fraction(double);
+
 		inline ll numerator() { return _sign * _num; }
 		inline ll denominator() { return _den; }
 		inline ll numerator() const { return _sign * _num; };
