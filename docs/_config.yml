@@ -1,6 +1,6 @@
 remote_theme: halivert/halivert.github.io@main
 
-title: "Matemáticas"
+title: "Matrices"
 
 defaults:
   - scope:
