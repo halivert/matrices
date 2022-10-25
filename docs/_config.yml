@@ -1,0 +1,10 @@
+remote_theme: halivert/halivert.github.io@main
+
+title: "Matrices"
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "repo"
+      has_instant_view: true
